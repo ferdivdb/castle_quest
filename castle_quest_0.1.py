@@ -1,6 +1,6 @@
 '''
 
-	faire un docstring propre
+	
 
 '''
 
@@ -12,7 +12,22 @@ def read_matrice(file):
 		Elle ouvre ce fichier et renvoie en sortie une matrice.
 
 	'''
-	return
+	with open(file) as f:
+		largeur = f.readline()
+		hauteur = f.readlines()
+
+	count = 0
+	count2 = 1
+	for ligne in largeur:
+		count += 1
+	for ligne in hauteur:
+		count2 += 1
+
+	count = int(count/2)
+
+	return (count, count2)
+	
+
 
 def show_plan(matrice):
 	'''
