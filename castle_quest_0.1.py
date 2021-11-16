@@ -12,20 +12,10 @@ def read_matrice(file):
 		Elle ouvre ce fichier et renvoie en sortie une matrice.
 
 	'''
-	with open(file) as f:
-		largeur = f.readline()
-		hauteur = f.readlines()
-
-	count = 0
-	count2 = 1
-	for ligne in largeur:
-		count += 1
-	for ligne in hauteur:
-		count2 += 1
-
-	count = int(count/2)
-
-	return (count, count2)
+	f = open ( 'plan_chateau.txt' , 'r')
+	matrice = [[int(n) for n in line.split(' ')] for line in f ]
+	return matrice
+print(read_matrice('plan_chateau.txt'))
 	
 
 
