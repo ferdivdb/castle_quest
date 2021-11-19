@@ -6,86 +6,92 @@ BROUILLON BROUILLON BROUILLON BROUILLON BROUILLON
 BROUILLON BROUILLON BROUILLON BROUILLON BROUILLON
 BROUILLON BROUILLON BROUILLON BROUILLON BROUILLON
 
-	import turtle
+import turtle
 
-#création matrix
+### couleurs
+def color(matrice):
+	if matrice[i][j] == 3: color = 'orange'
+	elif matrice[i][j] == 1: color = 'azure4'
+	elif matrice[i][j] == 4: color = 'green'
+	else: color = 'white'
+	return color
+
+###lire matrice
 def read_matrice(file):
-	
 	f = open(file, 'r')
-	matrice = [[int(n) for n in line.split(' ')] for line in f ]
+	matrice = [[int(n) for n in line.split(' ')] for line in f]
 	return matrice
 
-matrix = read_matrice('plan_chateau.txt')
-matrix.reverse()
-
-x = len(matrix[0])
-y = len(matrix)
-sc1 = x*x
-sc2 = y*x
-surf_p = sc1*sc2
-case = x*y
-faible = (surf_p/case)/(y)
-TURTLE_SIZE = (sc2/y)
-
-
-# Initialization objet Turtle  Screen Vitesse
-pen = turtle.Turtle()
-sc = turtle.Screen()
-sc.setup(sc1, sc2)
-pen.speed(0)
-pen.penup()
-# Initialization de la position de départ
-pen.goto(TURTLE_SIZE/2 - sc.window_width()/2, -(sc.window_height()/2 - TURTLE_SIZE/2)+faible)
-pos = pen.pos()
-pos1 = pos[0]
-pos2 = pos[1]
-
-pen.pendown()
-
-# Dessin carre
-def square(dim, color):
-	pen.color('white', color)
+### Dessin carre
+def tracer_carre(dimention):
 	for i in range(4):
-		pen.forward(dim)
+		pen.forward(dimention)
 		pen.left(90)
 
 
-# Parcours Matrice
-for i in range(len(matrix)):
-	pos2 += faible
-	for j in range(len(matrix[0])):
-		if matrix[i][j] == 3:
-			pen.begin_fill()
-			square(faible, 'orange')
-			pen.penup()
-			pen.forward(faible)
-			pen.pendown()
-			pen.end_fill()
-		elif matrix[i][j] == 1:
-			pen.begin_fill()
-			square(faible, 'azure4')
-			pen.penup()
-			pen.forward(faible)
-			pen.pendown()
-			pen.end_fill()
-		elif matrix[i][j] == 4:
-			pen.begin_fill()
-			square(faible, 'green')
-			pen.penup()
-			pen.forward(faible)
-			pen.pendown()
-			pen.end_fill()
-		else:
-			square(faible, 'white')
-			pen.penup()
-			pen.forward(faible)
-			pen.pendown()
+### Calcul step
+def calcul_step(matrice):
+	#matrice = read_matrice('plan_chateau.txt')
+	matrice.reverse()
+	step = len(matrice[0]) ** 2 / len(matrice)
+	return step
+
+
+#def tracer_case(case, color, step):
+
+
+#def coordonnees(case, step):
+
+#return case(case1,case2)
+
+#def show_plan(matrice):
+
+### Show plan
+matrice = read_matrice('plan_chateau.txt')
+step = calcul_step(matrice)
+# Initialization Ecran
+sc = turtle.Screen()
+sc.setup((len(matrice[0]) * len(matrice)), (len(matrice[0]) * len(matrice)))
+sc.tracer(0, 0)
+# Initialization turtle (vitesse, non visible et levé)
+pen = turtle.Turtle(visible = False)
+pen.speed(0)
+pen.penup()
+# envoyer turtle a la position initiale (en bas a gauche )
+pen.goto(len(matrice[0]) - sc.window_width() / 2, - (sc.window_height() / 2 - len(matrice[0]) / 2) + step)
+
+
+# case = position initiale
+case = pen.pos()
+case1 = case[0]
+case2 = case[1]
+
+for i in range(len(matrice)):         # coordonnées
+	case2 += step # pas
+	for j in range(len(matrice[0])):
+
+### TRACE CASE case, color, step
+		pen.pendown()
+		pen.begin_fill()
+		pen.color('white', color(matrice)) 
+		tracer_carre(step)
+		pen.penup()
+		pen.forward(step)
+		pen.pendown()
+		pen.end_fill()
+###
 	pen.penup()
-	pen.goto(pos1, pos2)
-	pen.pendown()	
+	pen.goto(case1, case2) # coordonnées
+	pen.pendown()
+
+
+sc.mainloop()
+sc.update()
+turtle.done()
+
+	
 	
 
-turtle.done()
 
 '''
 import turtle
@@ -116,13 +122,12 @@ def calcul_step(matrice):
 	'''
 	x = len(matrice[0])
 	y = len(matrice)
-	l = x*10
-	h = y*10
-	sc.setup(l, h)
-	surf_p = l*h
-	surf_m = x*y
-	step = (surf_p/surf_m)/(x/10)
-	return step
+	l = x*x
+	h = y*x
+	surface_pixel = l*h
+	case = x*y
+	step = (surface_pixel/case)/x
+	return case, step
 
 def coordonnees(case, step):
 	'''
@@ -133,16 +138,23 @@ def coordonnees(case, step):
 		des coordonnées verticales va de bas en haut. 
 
 	'''
-	TURTLE_SIZE = len(read_matrice('plan_chateau.txt'))
-	pen.goto(TURTLE_SIZE/2 - sc.window_width()/2, -(sc.window_height()/2 - TURTLE_SIZE/2)+step)
+	matrice = read_matrice('plan_chateau.txt')
+	pen = turtle.Turtle()
+	sc = turtle.Screen()
+	sc.setup(len(matrice[0])*len(matrice[0]), len(matrice)*len(matrice[0]))
+	TURTLE_SIZE = len(matrice[0])
+	pen.goto(TURTLE_SIZE/2 - sc.window_width()/2, -(sc.window_height()/2 - TURTLE_SIZE/2)+step[1])
+	case = pen.pos()
+	return case
 	
 
-def trace_square(dimention):
+def trace_carre(dimention):
 	'''
 
 		Trace un carré dont la dimension en pixels turtle est donnée en argument.
 
 	'''
+	pen.color="white"
 	for i in range(4):
 		pen.pendown()
 		pen.forward(dimention)
@@ -150,7 +162,7 @@ def trace_square(dimention):
 		pen.penup()
 
 
-def trace_case(case, color, step):
+def tracer_case(case, color, step):
 	'''
 
 		Reçoit en arguments un couple de coordonnées en indice dans la matrice 
@@ -161,12 +173,12 @@ def trace_case(case, color, step):
 
 	'''
 	pen.begin_fill()
-	square(case, color)
+	trace_square(case)
 	pen.penup()
 	pen.forward(step)
 	pen.pendown()
 	pen.end_fill()
-	return
+	
 
 
 
@@ -181,10 +193,36 @@ def show_plan(matrice):
 		dit la matrice.
 
 	'''
+	step = calcul_step(matrice)
+	pos = coordonnees(calcul_step(matrice), step)
+	pos1 = pos[0]
+	pos2 = pos[1]
+	color = 'white'
+	for i in range(len(matrice)):
+		pos2 += step[1]
+		for j in range(len(matrice[0])):
+			if matrice[i][j] == 3:
+				color = 'orange'
+			elif matrice[i][j] == 1:
+				color = 'azure4'
+			elif matrice[i][j] == 4:
+				color = 'green'
+			else:
+				color = 'white'
+			trace_case(coordonnees(step[0], step[1]), color, step[1])
+		pen.penup()
+		pen.goto(pos1, pos2)
+		pen.pendown()	
+	turtle.done()
+
+
+show_plan(read_matrice('plan_chateau.txt'))
+
+	
 	
 
 
-	return
+	
 
 
 
